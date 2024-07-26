@@ -1,0 +1,65 @@
+version: '3.1'
+
+services:
+
+  wordpress:
+    image: phuc1205/wp:latest
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: phuc1205
+      WORDPRESS_DB_PASSWORD: 12052003
+      WORDPRESS_DB_NAME: exampledb
+    ports:
+      - 8088:80
+    volumes:
+      - ./wordpress:/var/www/html
+    networks:
+      - phucdz
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: phuc1205
+      MYSQL_PASSWORD: 12052003
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./scheme:/docker-entrypoint-initdb.d
+    networks:
+      - phucdz
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports: 
+      - 8090:80
+    networks:
+      - phucdz
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_wordpress
+    ports:
+      - 80:80
+    volumes:
+            #- ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - phucdz
+
+volumes:
+  wordpress:
+  db:
+  nginx:
+
+networks:
+  phucdz:
+    driver: bridge
+
