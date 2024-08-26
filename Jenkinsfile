@@ -16,7 +16,7 @@ pipeline {
                 script {
                     sh 'docker-compose build'
                     dockerImage = "wordpress_phuc:${env.BUILD_NUMBER}"
-                    sh "docker tag $(docker-compose images -q) ${dockerImage}"
+                    sh "docker tag \$(docker-compose images -q) ${dockerImage}"
                 }
             }
         }
